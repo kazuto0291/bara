@@ -3,11 +3,39 @@ import './App.css';
 import ToDoListItem from "./ToDoListltem.js"
 
 class App extends Component {
+// ToDoListをstateに定義、初期値は []
+  state = {
+    todoList: []
+  }
+
   render() {
     return (
       <div className="App">
         <form
           className="App-form"
+          onSubmit={e => {
+            // formのデフォルトのイベントをキャンセル
+            e.preventDefault();
+            // idがtitleのElementを取得
+            const titleElement = e.target.elements["title"]
+             // idがdescriptionのElementを取得
+            const descriptionElemnt = e.target.elements["description"];
+
+             // todoList stateに追加
+            this.setState(
+              {
+                todoList: this.state.todoList.concat({
+                  title: titleElement.value,
+                  description: descriptionElemnt.value
+                })
+              },
+              // stateの変更後に入力した値を空にする
+              () => {
+                titleElement.value = "";
+                descriptionElemnt.value ="";
+              }
+            )
+          }}
           >
             <div>
               <input
@@ -28,13 +56,17 @@ class App extends Component {
             </div>
           </form>
         <div>
+        {/* /* todoList配列の要素数分ToDoListItemコンポーネントを展開 */ }
+        {this.state.todoList.map(todo => (
           <ToDoListItem
-            title="ホームページ作成"
-            description="サークルホームページを今週中に作成する"
+            key={todo.title}
+            title={todo.title}
+            description={todo.description}
             />
+        ))}
         </div>
       </div>
-
+      
     );
   }
 }
